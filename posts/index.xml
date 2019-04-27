@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Authoritative, Convincing Title</title>
-    <link>http://example.com/posts/</link>
+    <link>https://epalm.github.io/posts/</link>
     <description>Recent content in Posts on Authoritative, Convincing Title</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.com/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://epalm.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Signing and verifying messages with RSA keys, using Python and C#</title>
-      <link>http://example.com/posts/signing-and-verifying-with-rsa-keys/</link>
+      <link>https://epalm.github.io/posts/signing-and-verifying-with-rsa-keys/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.com/posts/signing-and-verifying-with-rsa-keys/</guid>
+      <guid>https://epalm.github.io/posts/signing-and-verifying-with-rsa-keys/</guid>
       <description>Overview I recently needed to:
  Create a message on a Linux server. Some time later, read the message on a Windows computer. Be pretty darn sure the message hadn&amp;rsquo;t been tampered with.  Public-key cryptography (aka asymmetric cryptography) to the rescue! Paraphrasing Wikipedia&amp;rsquo;s definition, public-key cryptography is a system that uses pairs of keys: public keys which may be shared widely, and private keys which are known only to the owner.</description>
     </item>
