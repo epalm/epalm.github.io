@@ -200,14 +200,14 @@ blockquote,
 <li>Be pretty darn sure the message hadn&rsquo;t been tampered with.</li>
 </ol>
 
-<p>Public-key cryptography (aka <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">asymmetric cryptography</a>) to the rescue! Paraphrasing Wikipedia&rsquo;s definition, public-key cryptography is a system that uses pairs of keys: <em>public keys</em> which may be shared widely, and <em>private keys</em> which are known only to the owner. After generating such a pair of keys, you can perform two main functions:</p>
+<p>Public-key cryptography (aka <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">asymmetric cryptography</a>) to the rescue! Paraphrasing Wikipedia&rsquo;s definition, public-key cryptography is a system that uses pairs of keys: <strong>public keys</strong> which may be shared widely, and <strong>private keys</strong> which are known only to the owner. After generating such a pair of keys, you can perform two main functions:</p>
 
 <ol>
 <li>Use a public key to <strong>encrypt</strong> a message which can only be <strong>decrypted</strong> by the matching private key.</li>
 <li>Use a private key to <strong>sign</strong> a message that can be <strong>verified</strong> by the matching public key.</li>
 </ol>
 
-<p>We&rsquo;re interested in function #1 above. This is a beginner tutorial on how to generate a pair of public/private RSA keys, use the private key to sign a message using <strong>Python 2 on Ubuntu 14.04</strong>, and then later use the public key to verify the message using <strong>C# and .NET 4 on Windows 10</strong>.</p>
+<p>We&rsquo;re interested in function #2 above. This is a beginner tutorial on how to generate a pair of public/private RSA keys, use the private key to sign a message using <strong>Python 2 on Ubuntu 14.04</strong>, and then later use the public key to verify the message using <strong>C# and .NET 4 on Windows 10</strong>.</p>
 
 <p>Disclaimer: I&rsquo;m not a cryptography or security expert. That also means if I can understand this stuff, anyone can!</p>
 
