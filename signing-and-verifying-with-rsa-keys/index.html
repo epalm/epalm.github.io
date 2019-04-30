@@ -187,6 +187,9 @@ blockquote,
   Oct 9, 2018
   </small>
   
+
+<small><code><a href="https://blog.epalm.ca/tags/software">software</a></code></small>
+
 </p>
 
 
@@ -271,57 +274,57 @@ total 8
 $ sudo apt-get install python-pip python-dev build-essential libgmp3-dev
 $ sudo pip install pycryptodome</pre></div>
 <p>Now let&rsquo;s write some Python to sign a message with our private key. We&rsquo;ll also verify the message with our public key, which isn&rsquo;t strictly necessary at this point, but is a good sanity check. This code was written with help from the <a href="https://www.pycryptodome.org/en/latest/">pycryptodome documentation</a>.</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">from base64 import b64encode
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">base64</span> <span style="color:#008000;font-weight:bold">import</span> b64encode
+<span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">Crypto.Hash</span> <span style="color:#008000;font-weight:bold">import</span> SHA256
+<span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">Crypto.PublicKey</span> <span style="color:#008000;font-weight:bold">import</span> RSA
+<span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">Crypto.Signature</span> <span style="color:#008000;font-weight:bold">import</span> pkcs1_15
 
-# create a message
-message = &#39;hello&#39;
+<span style="color:#408080;font-style:italic"># create a message</span>
+message <span style="color:#666">=</span> <span style="color:#ba2121">&#39;hello&#39;</span>
 
-# load private key
-with open(&#39;private.pem&#39;, &#39;r&#39;) as f:
-    private_key = RSA.import_key(f.read())
+<span style="color:#408080;font-style:italic"># load private key</span>
+<span style="color:#008000;font-weight:bold">with</span> <span style="color:#008000">open</span>(<span style="color:#ba2121">&#39;private.pem&#39;</span>, <span style="color:#ba2121">&#39;r&#39;</span>) <span style="color:#008000;font-weight:bold">as</span> f:
+    private_key <span style="color:#666">=</span> RSA<span style="color:#666">.</span>import_key(f<span style="color:#666">.</span>read())
 
-# hash the message
-digest = SHA256.new(message)
+<span style="color:#408080;font-style:italic"># hash the message</span>
+digest <span style="color:#666">=</span> SHA256<span style="color:#666">.</span>new(message)
 
-# sign the digest
-signature = pkcs1_15.new(private_key).sign(digest)
+<span style="color:#408080;font-style:italic"># sign the digest</span>
+signature <span style="color:#666">=</span> pkcs1_15<span style="color:#666">.</span>new(private_key)<span style="color:#666">.</span>sign(digest)
 
-# load public key
-with open(&#39;public.pem&#39;, &#39;r&#39;) as f:
-    public_key = RSA.import_key(f.read())
+<span style="color:#408080;font-style:italic"># load public key</span>
+<span style="color:#008000;font-weight:bold">with</span> <span style="color:#008000">open</span>(<span style="color:#ba2121">&#39;public.pem&#39;</span>, <span style="color:#ba2121">&#39;r&#39;</span>) <span style="color:#008000;font-weight:bold">as</span> f:
+    public_key <span style="color:#666">=</span> RSA<span style="color:#666">.</span>import_key(f<span style="color:#666">.</span>read())
 
-# verify the digest and signature
-pkcs1_15.new(public_key).verify(digest, signature)
+<span style="color:#408080;font-style:italic"># verify the digest and signature</span>
+pkcs1_15<span style="color:#666">.</span>new(public_key)<span style="color:#666">.</span>verify(digest, signature)
 
-# base64 encode the signature
-signature_b64 = b64encode(signature)</pre></div>
+<span style="color:#408080;font-style:italic"># base64 encode the signature</span>
+signature_b64 <span style="color:#666">=</span> b64encode(signature)</code></pre></div>
 <p>Let&rsquo;s break down what&rsquo;s going on here.</p>
 
 <p>First, we read the private key from disk, and import it. This gives us an RSA key object to work with:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># load private key
-with open(&#39;private.pem&#39;, &#39;r&#39;) as f:
-    private_key = RSA.import_key(f.read())</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># load private key</span>
+<span style="color:#008000;font-weight:bold">with</span> <span style="color:#008000">open</span>(<span style="color:#ba2121">&#39;private.pem&#39;</span>, <span style="color:#ba2121">&#39;r&#39;</span>) <span style="color:#008000;font-weight:bold">as</span> f:
+    private_key <span style="color:#666">=</span> RSA<span style="color:#666">.</span>import_key(f<span style="color:#666">.</span>read())</code></pre></div>
 <p>Next, we hash the message, because, for technical reasons I&rsquo;m not qualified to explain, the size of the message an RSA key can sign depends on the size of the RSA key itself. The 2048 bit key we generated above can handle RSA operations on messages up to 255 bytes. In our little example here, our message is simply <code>hello</code> (5 bytes, depending on string encoding), but consider that the message we want to sign could be anything, e.g. a large XML document, or a large binary file. Hashing the message, in this case with the <a href="https://en.wikipedia.org/wiki/SHA-2">SHA256 hashing algorithm</a>, generates a 32-byte representation of the message (no matter the original size of the message), and <em>that&rsquo;s</em> what we want to sign:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># hash the message
-digest = SHA256.new(message)</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># hash the message</span>
+digest <span style="color:#666">=</span> SHA256<span style="color:#666">.</span>new(message)</code></pre></div>
 <p>Now we can sign the message hash (also called a &ldquo;message digest&rdquo;, or just &ldquo;digest&rdquo;), using our private key:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># sign the digest
-signature = pkcs1_15.new(private_key).sign(digest)</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># sign the digest</span>
+signature <span style="color:#666">=</span> pkcs1_15<span style="color:#666">.</span>new(private_key)<span style="color:#666">.</span>sign(digest)</code></pre></div>
 <p>At this point we&rsquo;re done signing the message. However we can also use pycryptodome to verify that our private key, public key, message, and signature are all singing the same tune. To do this, we just load the public key from disk and import it:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># load public key
-with open(&#39;public.pem&#39;, &#39;r&#39;) as f:
-    public_key = RSA.import_key(f.read())</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># load public key</span>
+<span style="color:#008000;font-weight:bold">with</span> <span style="color:#008000">open</span>(<span style="color:#ba2121">&#39;public.pem&#39;</span>, <span style="color:#ba2121">&#39;r&#39;</span>) <span style="color:#008000;font-weight:bold">as</span> f:
+    public_key <span style="color:#666">=</span> RSA<span style="color:#666">.</span>import_key(f<span style="color:#666">.</span>read())</code></pre></div>
 <p>And then we verify with the public key, the message digest, and the signature:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># verify the digest and signature
-pkcs1_15.new(public_key).verify(digest, signature)</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># verify the digest and signature</span>
+pkcs1_15<span style="color:#666">.</span>new(public_key)<span style="color:#666">.</span>verify(digest, signature)</code></pre></div>
 <p>If the call to <code>verify</code> doesn&rsquo;t throw an error, we&rsquo;re good! We&rsquo;ve got a public key, a message, and a signature we can now send to anyone, and using <strong>MATH</strong> they can verify (A) <em>we</em> composed the message, and (B) no one has <em>tampered</em> with the message, assuming of course that we&rsquo;ve done a good job keeping the private key a secret.</p>
 
 <p>Lastly, we base64-encode our signature. We do this because the signature at this point is just a collection of 256 bytes, and we&rsquo;re probably going to be sending it somewhere (along with the message), so base64 encoding turns it into a portable/printable string:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># base64 encode the signature
-signature_b64 = b64encode(signature)</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># base64 encode the signature</span>
+signature_b64 <span style="color:#666">=</span> b64encode(signature)</code></pre></div>
 <p>If all went well, <code>signature_b64</code> now looks like this:</p>
 <div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">i5cldlxoVQdE/pCwwmqNHv0MOizb7sU4ssNPeQt/CtVtn/8RkeIX6BBX/vMtuJG0BEm8tLQ1zh5Rykkf4lYuRj1h0Ad3FiI7ANTSrZ/84FpP2TgHV4OyVlIsoKEnyyAMw3rQJWTuIMr6WW0buIFbNSfrokhtPRRbXOgP+6biWifK1zZeChbnNkrK8q/mPz28hMIFpqMDfo4UJ3ZkcZgUw0J5rSTzsQDikQpUzgsZfSuv5B+rb9Qb/7vqSmy+QjqL3QdPmmadUzzQNysUgMgGqqdINmLwdFgXHN2jcvRLVdM9vqblU1Ch/zNPUqIRv0amT9MkNZ/mnH2G94LC7RVIMA==</pre></div>
 <h2 id="verify-the-message-with-c">Verify the message with C#</h2>
@@ -329,81 +332,87 @@ signature_b64 = b64encode(signature)</pre></div>
 <p>Unfortunately (again), I couldn&rsquo;t find a way to use stock C# to play with RSA key signing and verifying using the <code>*.pem</code> files we generated earlier, and needed a 3rd party library called <a href="https://www.bouncycastle.org/csharp/index.html">BouncyCastle</a>. (If you work in a corporate environment, try not to tell your boss you&rsquo;re using a free 3rd party library called &ldquo;BouncyCastle&rdquo; for sensitive cryptographic applications.) Use <a href="https://www.nuget.org/">Nuget</a> to install BouncyCastle:</p>
 <div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">Install-Package BouncyCastle</pre></div>
 <p>Now let&rsquo;s write some C# to verify the message. This code was written with help from various StackOverflow questions and answers, because I couldn&rsquo;t find any BouncyCastle documentation relating to signing/verifying RSA keys.</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.OpenSsl;
-using Org.BouncyCastle.Security;
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">Org.BouncyCastle.Crypto</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">Org.BouncyCastle.Crypto.Parameters</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">Org.BouncyCastle.OpenSsl</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">Org.BouncyCastle.Security</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">System</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">System.IO</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">System.Security.Cryptography</span>;
+<span style="color:#008000;font-weight:bold">using</span> <span style="color:#00f;font-weight:bold">System.Text</span>;
 
-namespace ConsoleApplication
+<span style="color:#008000;font-weight:bold">namespace</span> <span style="color:#00f;font-weight:bold">ConsoleApplication</span>
 {
-    class Program
+    <span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Program</span>
     {
-        static void Main(string[] args)
+        <span style="color:#008000;font-weight:bold">static</span> <span style="color:#008000;font-weight:bold">void</span> Main(<span style="color:#b00040">string</span><span style="color:#7d9029">[]</span> args)
         {
-            // &#34;-----BEGIN PUBLIC KEY-----&#34;
-            var publicKey = File.ReadAllText(&#34;public.pem&#34;);
+            <span style="color:#408080;font-style:italic">// &#34;-----BEGIN PUBLIC KEY-----&#34;
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">var</span> publicKey = File.ReadAllText(<span style="color:#ba2121">&#34;public.pem&#34;</span>);
 
-            // &#34;hello&#34;;
-            var message = File.ReadAllText(&#34;message.txt&#34;);
+            <span style="color:#408080;font-style:italic">// &#34;hello&#34;;
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">var</span> message = File.ReadAllText(<span style="color:#ba2121">&#34;message.txt&#34;</span>);
 
-            // &#34;i5cldlxoVQdE...&#34;
-            var signatureB64 = File.ReadAllText(&#34;signature.txt&#34;);
+            <span style="color:#408080;font-style:italic">// &#34;i5cldlxoVQdE...&#34;
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">var</span> signatureB64 = File.ReadAllText(<span style="color:#ba2121">&#34;signature.txt&#34;</span>);
 
-            // import public key
-            var rsa = new RSACryptoServiceProvider();
+            <span style="color:#408080;font-style:italic">// import public key
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">var</span> rsa = <span style="color:#008000;font-weight:bold">new</span> RSACryptoServiceProvider();
             rsa.ImportParameters(PublicKeyParams(publicKey));
 
-            // hash the message
-            byte[] buffer = Encoding.ASCII.GetBytes(message);
-            byte[] digest = new SHA256Managed().ComputeHash(buffer);
+            <span style="color:#408080;font-style:italic">// hash the message
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> buffer = Encoding.ASCII.GetBytes(message);
+            <span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> digest = <span style="color:#008000;font-weight:bold">new</span> SHA256Managed().ComputeHash(buffer);
 
-            // base64-decode the signature
-            byte[] signature = Convert.FromBase64String(signatureB64);
+            <span style="color:#408080;font-style:italic">// base64-decode the signature
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> signature = Convert.FromBase64String(signatureB64);
 
-            // verify the message digest and signature
-            bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&#34;SHA256&#34;), signature);
+            <span style="color:#408080;font-style:italic">// verify the message digest and signature
+</span><span style="color:#408080;font-style:italic"></span>            <span style="color:#b00040">bool</span> verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(<span style="color:#ba2121">&#34;SHA256&#34;</span>), signature);
 
             Console.WriteLine(verified);
             Console.ReadLine();
         }
 
-        private static RSAParameters PrivateKeyParams(string privateKey)
+        <span style="color:#008000;font-weight:bold">private</span> <span style="color:#008000;font-weight:bold">static</span> RSAParameters PrivateKeyParams(<span style="color:#b00040">string</span> privateKey)
         {
-            var pemReader = new PemReader(new StringReader(privateKey));
-            return DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)(((AsymmetricCipherKeyPair)pemReader.ReadObject()).Private));
+            <span style="color:#b00040">var</span> pemReader = <span style="color:#008000;font-weight:bold">new</span> PemReader(<span style="color:#008000;font-weight:bold">new</span> StringReader(privateKey));
+            <span style="color:#008000;font-weight:bold">return</span> DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)(((AsymmetricCipherKeyPair)pemReader.ReadObject()).Private));
         }
 
-        private static RSAParameters PublicKeyParams(string publicKey)
+        <span style="color:#008000;font-weight:bold">private</span> <span style="color:#008000;font-weight:bold">static</span> RSAParameters PublicKeyParams(<span style="color:#b00040">string</span> publicKey)
         {
-            var pemReader = new PemReader(new StringReader(publicKey));
-            return DotNetUtilities.ToRSAParameters((RsaKeyParameters)pemReader.ReadObject());
+            <span style="color:#b00040">var</span> pemReader = <span style="color:#008000;font-weight:bold">new</span> PemReader(<span style="color:#008000;font-weight:bold">new</span> StringReader(publicKey));
+            <span style="color:#008000;font-weight:bold">return</span> DotNetUtilities.ToRSAParameters((RsaKeyParameters)pemReader.ReadObject());
         }
     }
-}</pre></div>
+}
+</code></pre></div>
 <p>Again, let&rsquo;s break this down. Let&rsquo;s assume we&rsquo;ve transferred the public key, the message, and the signature to a computer running Windows, in the form of a few files, namely <code>message.txt</code>, <code>public.pem</code>, and <code>signature.txt</code>.</p>
 
 <p>First, we load our public key, message, and base64-encoded signature from disk:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">var publicKey = File.ReadAllText(&#34;public.pem&#34;);
-var message = File.ReadAllText(&#34;message.txt&#34;);
-var signatureB64 = File.ReadAllText(&#34;signature.txt&#34;);</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#b00040">var</span> publicKey = File.ReadAllText(<span style="color:#ba2121">&#34;public.pem&#34;</span>);
+<span style="color:#b00040">var</span> message = File.ReadAllText(<span style="color:#ba2121">&#34;message.txt&#34;</span>);
+<span style="color:#b00040">var</span> signatureB64 = File.ReadAllText(<span style="color:#ba2121">&#34;signature.txt&#34;</span>);
+</code></pre></div>
 <p>Next, we import the public key. Here&rsquo;s where we need BouncyCastle to convert a <code>.pem</code> file to <code>RSAParameters</code> using <code>PemReader</code> and <code>ToRSAParameters</code> along with some casting backflips (check out the <code>PublicKeyParams</code> method, and I&rsquo;ve also included <code>PrivateKeyParams</code> for completeness). This gives us an RSA key object to work with:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// import public key
-var rsa = new RSACryptoServiceProvider();
-rsa.ImportParameters(PublicKeyParams(publicKey));</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#408080;font-style:italic">// import public key
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#b00040">var</span> rsa = <span style="color:#008000;font-weight:bold">new</span> RSACryptoServiceProvider();
+rsa.ImportParameters(PublicKeyParams(publicKey));
+</code></pre></div>
 <p>Hash the message by sending the bytes of our message through our SHA256 hash function:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// hash the message
-byte[] buffer = Encoding.ASCII.GetBytes(message);
-byte[] digest = new SHA256Managed().ComputeHash(buffer);</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#408080;font-style:italic">// hash the message
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> buffer = Encoding.ASCII.GetBytes(message);
+<span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> digest = <span style="color:#008000;font-weight:bold">new</span> SHA256Managed().ComputeHash(buffer);
+</code></pre></div>
 <p>Remember we base64-encoded our signature, so we need to convert that back:</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// base64 decode signature
-byte[] signature = Convert.FromBase64String(signatureB64);</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#408080;font-style:italic">// base64 decode signature
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#b00040">byte</span><span style="color:#7d9029">[]</span> signature = Convert.FromBase64String(signatureB64);
+</code></pre></div>
 <p>Lastly, we call <code>rsa.VerifyHash</code> with the message digest and signature. We also need to indicate which hash function was used on the message (in our case it was SHA256).</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// verify the message digest and signature
-bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&#34;SHA256&#34;), signature);</pre></div>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#408080;font-style:italic">// verify the message digest and signature
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#b00040">bool</span> verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(<span style="color:#ba2121">&#34;SHA256&#34;</span>), signature);
+</code></pre></div>
 <p>If <code>rsa.VerifyHash</code> returns <code>true</code>, we&rsquo;re done! In other words, again, the message is (A) from who we expect, and (B) hasn&rsquo;t been tampered with.</p>
 
 <h2 id="final-thoughts">Final thoughts</h2>

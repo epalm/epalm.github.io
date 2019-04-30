@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>software on </title>
+    <link>https://blog.epalm.ca/tags/software/</link>
+    <description>Recent content in software on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://blog.epalm.ca/tags/software/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Signing and verifying messages with RSA keys, using Python and C#</title>
+      <link>https://blog.epalm.ca/signing-and-verifying-with-rsa-keys/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.epalm.ca/signing-and-verifying-with-rsa-keys/</guid>
+      <description>Overview I recently needed to:
+ Create a message on a Linux server. Some time later, read the message on a Windows computer. Be pretty darn sure the message hadn&amp;rsquo;t been tampered with.  Public-key cryptography (aka asymmetric cryptography) to the rescue! Paraphrasing Wikipedia&amp;rsquo;s definition, public-key cryptography is a system that uses pairs of keys: public keys which may be shared widely, and private keys which are known only to the owner.</description>
+    </item>
+    
+  </channel>
+</rss>
