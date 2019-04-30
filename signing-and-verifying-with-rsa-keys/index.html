@@ -1,147 +1,194 @@
-<!DOCTYPE html>
-<html lang="en-us">
-    <head>
-         
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Signing and verifying messages with RSA keys, using Python and C#</title>
-        
-        <style>
+<!doctype html>
+<html lang="en">
 
-    html body {
-        font-family: 'Verdana', sans-serif;
-        background-color: white;
-    }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <meta name="generator" content="Hugo 0.55.4" />
 
-    :root {
-        --accent: green;
-        --border-width:  0 ;
-    }
+  
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="https://blog.epalm.ca/apple-touch-icon.png">
+
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="https://blog.epalm.ca/favicon-32x32.png">
+
+  
+  <link rel="icon" type="image/png" sizes="16x16" href="https://blog.epalm.ca/favicon-16x16.png">
+
+  
+  <link rel="manifest" href="https://blog.epalm.ca/site.webmanifest">
+
+  
+  <link rel="mask-icon" href="https://blog.epalm.ca/safari-pinned-tab.svg" color="#5bbad5">
+
+  <meta name="msapplication-TileColor" content="#da532c">
+
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link rel="stylesheet" href="https://blog.epalm.ca/css/bootstrap.min.css" />
+
+  
+  <title>Signing and verifying messages with RSA keys, using Python and C# | </title>
+  
+
+  <style>
+body {
+  min-width: 300px;
+}
+
+.custom-navbar {
+  margin-bottom: 1em;
+  height: 60px;
+}
+
+.custom-navbar a {
+  display: inline-block; 
+  padding: 18px 0;
+  margin-right: 1em; 
+  font-weight: bold; 
+}
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  text-decoration: none; 
+}
+
+@media print {
+  .custom-navbar {
+    display: none;
+  }
+}
+
+article {
+  padding-bottom: 1em;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+body {
+  background-color: #fff;
+}
+
+
+
+body {
+  color: #212529;
+}
+
+
+
+a {
+  color: #007bff;
+}
+
+
+
+a:hover,
+a:focus {
+  color: #0056b3;
+}
+
+
+
+.custom-navbar {
+  background-color: #212529;
+}
+
+
+
+.custom-navbar a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+
+.custom-navbar a:hover,
+.custom-navbar a:focus {
+  color: rgba(255, 255, 255, 1);
+}
+
+
+
+.container {
+  max-width: 800px;
+}
+
+
+
+pre {
+  display: block;
+  padding: 9.5px;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit; 
+  white-space: pre-wrap;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+code {
+  padding: 2px 4px;
+  color: inherit; 
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: .9em;
+}
+
+
+
+blockquote,
+.blockquote {
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 1em;
+  border-left: 5px solid #6c757d;
+}
 
 </style>
+</head>
 
-
-<link rel="stylesheet" href="https://epalm.github.io/css/main.css">
-
-
-
-
-
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Verdana">
-
-
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css"> 
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
- 
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/kotlin.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/scala.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/swift.min.js"></script> 
-
-    <script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-
-<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
- <meta name="generator" content="Hugo 0.55.2" />
-        
-
-        
-    </head>
-
+<body>
+  <nav class="custom-navbar">
+  <div class="container">
     
+    <a href="/">Posts</a>
     
-    <script type="text/javascript" async
-      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
+    <a href="/tags/">Tags</a>
     
-
-    <body>
-         
-        <nav class="navbar navbar-default navbar-fixed-top">
-
-            <div class="container">
-
-                <div class="navbar-header">
-
-                    <a class="navbar-brand visible-xs" href="#">Signing and verifying messages with RSA keys, using Python and C#</a>
-
-                    <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-
-                </div>
-
-                <div class="collapse navbar-collapse">
-
-                    
-                        <ul class="nav navbar-nav">
-                            
-                                <li><a href="/">Home</a></li>
-                            
-                                <li><a href="/posts/">Posts</a></li>
-                            
-                        </ul>
-                    
-
-                    
-                        <ul class="nav navbar-nav navbar-right">
-                            
-                                <li class="navbar-icon"><a href="https://github.com/epalm/"><i class="fa fa-github"></i></a></li>
-                            
-                                <li class="navbar-icon"><a href="https://bitbucket.org/epalm/"><i class="fa fa-bitbucket"></i></a></li>
-                            
-                                <li class="navbar-icon"><a href="https://stackoverflow.com/users/466011/epalm"><i class="fa fa-stack-overflow"></i></a></li>
-                            
-                                <li class="navbar-icon"><a href="https://twitter.com/epalm/"><i class="fa fa-twitter"></i></a></li>
-                            
-                        </ul>
-                    
-
-                </div>
-
-            </div>
-
-        </nav>
-
-
-<main>
-
-    <div class="item">
-
+    <a href="/about/">About</a>
     
-    
-    
+  </div>
+</nav>
+  
+  <div class="container">
+    <article>
+      <h1>Signing and verifying messages with RSA keys, using Python and C#</h1>
+<p>
+  <small class="text-secondary">
+  
+  
+  Oct 9, 2018
+  </small>
+  
+</p>
 
-    
-    
-
-    <h4><a href="/posts/signing-and-verifying-with-rsa-keys/">Signing and verifying messages with RSA keys, using Python and C#</a></h4>
-    <h5>October 9, 2018</h5>
-    
-
-</div>
-
-
-    <br> <div class="text-justify">
 
 <h2 id="overview">Overview</h2>
 
@@ -171,14 +218,10 @@
 <h2 id="generate-public-private-rsa-keys">Generate public/private RSA keys</h2>
 
 <p>In your favorite Linux shell, use <strong>openssl</strong> to generate a private key, then a public key.</p>
-
-<pre><code>$ openssl genrsa -out private.pem 2048
-$ openssl rsa -in private.pem -pubout -out public.pem
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ openssl genrsa -out private.pem 2048
+$ openssl rsa -in private.pem -pubout -out public.pem</pre></div>
 <p>If you open up <code>private.pem</code>, it should look something like this:</p>
-
-<pre><code>-----BEGIN RSA PRIVATE KEY-----
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAyJ9bvTy6TMxugIsnMjSV7yk0Jl5Op8JhNktOEGJBaPzZqTSG
 1lPGmYLobE9c7fakcLrR8ANkZRjgLJey0vE13lspDVXSEwFCI+75ZGC6gja5c/Qo
 SmBM6dsgvg210c7dC/apJE4oiOQttfjt+mMAsMb7VSIuDzPD6HAvIhdKpZSY6EVJ
@@ -204,12 +247,9 @@ Aw1v8CBiNUu08OcgXswZszDXLcznEFOYeVPfehWGYidIbA9gfECQFhJh+90eounJ
 F6qtTu0CgYBwVahJLZS1VfZaR3ZoPW2g1QfChG2kh7JRupZQPhgs0Ll/+mY5Rnd8
 j4iffI8iOeKyQJFQutNXaNxborOLQZDvwYSEAxs8AU0l8WVHEmxOsyQUbO2EvWNS
 aDNonwQjOegmkff7UuC0iOqXaL30LtD7l0yZ6FdPJm4a9UNFbcmq3A==
------END RSA PRIVATE KEY-----
-</code></pre>
-
+-----END RSA PRIVATE KEY-----</pre></div>
 <p>And <code>public.pem</code> should look like this:</p>
-
-<pre><code>-----BEGIN PUBLIC KEY-----
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJ9bvTy6TMxugIsnMjSV
 7yk0Jl5Op8JhNktOEGJBaPzZqTSG1lPGmYLobE9c7fakcLrR8ANkZRjgLJey0vE1
 3lspDVXSEwFCI+75ZGC6gja5c/QoSmBM6dsgvg210c7dC/apJE4oiOQttfjt+mMA
@@ -217,41 +257,32 @@ sMb7VSIuDzPD6HAvIhdKpZSY6EVJJJ1m14tJ1OEjpLqB6cEaLD1RUSB+9UomrSrC
 32+ESsjKLA+H8itnGbzNnyKLGlnyIpzHVM8aSfRea/3YSnKDIStGlnwOFW6hcpJh
 pOL3gpiZjxmNKTdz8wD2BZlvFwaBgdcbfE1JtfC6AkV2RhfdK7qh4mKVhDAI4Yf7
 DwIDAQAB
------END PUBLIC KEY-----
-</code></pre>
-
+-----END PUBLIC KEY-----</pre></div>
 <p>Now&rsquo;s the time to mention that while the public key is meant to be distributed to anyone who needs it, <strong>the private key must be kept secret</strong>. For now, let&rsquo;s use <code>chmod</code> to ensure only we can read <code>private.pem</code>.</p>
-
-<pre><code>$ chmod 400 private.pem
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ chmod 400 private.pem
 $ ls -l
 total 8
 -r-------- 1 epalm epalm 1679 Oct  4 03:34 private.pem
--rw-r--r-- 1 epalm epalm  451 Oct  4 03:34 public.pem
-</code></pre>
-
+-rw-r--r-- 1 epalm epalm  451 Oct  4 03:34 public.pem</pre></div>
 <p><a href="https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail">Click here</a> if you want to know more about the <code>pem</code> file format. It was a filed attempt at securing email, but the container format has lived on.</p>
 
 <h2 id="sign-the-message-with-python">Sign the message with Python</h2>
 
 <p>Unfortunately, I couldn&rsquo;t find a way to use stock Python to play with RSA key signing, and needed a 3rd party library called <a href="https://github.com/Legrandin/pycryptodome">pycryptodome</a> (an active fork of, and drop-in replacement for, the idle-since-2014 <a href="https://github.com/dlitz/pycrypto">pycrypto</a> library). To install pycryptodome you&rsquo;ll need to install a few dependencies first:</p>
-
-<pre><code>$ sudo apt-get update
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ sudo apt-get update
 $ sudo apt-get install python-pip python-dev build-essential libgmp3-dev
-$ sudo pip install pycryptodome
-</code></pre>
-
+$ sudo pip install pycryptodome</pre></div>
 <p>Now let&rsquo;s write some Python to sign a message with our private key. We&rsquo;ll also verify the message with our public key, which isn&rsquo;t strictly necessary at this point, but is a good sanity check. This code was written with help from the <a href="https://www.pycryptodome.org/en/latest/">pycryptodome documentation</a>.</p>
-
-<pre><code>from base64 import b64encode
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">from base64 import b64encode
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 
 # create a message
-message = 'hello'
+message = &#39;hello&#39;
 
 # load private key
-with open('private.pem', 'r') as f:
+with open(&#39;private.pem&#39;, &#39;r&#39;) as f:
     private_key = RSA.import_key(f.read())
 
 # hash the message
@@ -261,73 +292,46 @@ digest = SHA256.new(message)
 signature = pkcs1_15.new(private_key).sign(digest)
 
 # load public key
-with open('public.pem', 'r') as f:
+with open(&#39;public.pem&#39;, &#39;r&#39;) as f:
     public_key = RSA.import_key(f.read())
 
 # verify the digest and signature
 pkcs1_15.new(public_key).verify(digest, signature)
 
 # base64 encode the signature
-signature_b64 = b64encode(signature)
-</code></pre>
-
+signature_b64 = b64encode(signature)</pre></div>
 <p>Let&rsquo;s break down what&rsquo;s going on here.</p>
 
 <p>First, we read the private key from disk, and import it. This gives us an RSA key object to work with:</p>
-
-<pre><code># load private key
-with open('private.pem', 'r') as f:
-    private_key = RSA.import_key(f.read())
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># load private key
+with open(&#39;private.pem&#39;, &#39;r&#39;) as f:
+    private_key = RSA.import_key(f.read())</pre></div>
 <p>Next, we hash the message, because, for technical reasons I&rsquo;m not qualified to explain, the size of the message an RSA key can sign depends on the size of the RSA key itself. The 2048 bit key we generated above can handle RSA operations on messages up to 255 bytes. In our little example here, our message is simply <code>hello</code> (5 bytes, depending on string encoding), but consider that the message we want to sign could be anything, e.g. a large XML document, or a large binary file. Hashing the message, in this case with the <a href="https://en.wikipedia.org/wiki/SHA-2">SHA256 hashing algorithm</a>, generates a 32-byte representation of the message (no matter the original size of the message), and <em>that&rsquo;s</em> what we want to sign:</p>
-
-<pre><code># hash the message
-digest = SHA256.new(message)
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># hash the message
+digest = SHA256.new(message)</pre></div>
 <p>Now we can sign the message hash (also called a &ldquo;message digest&rdquo;, or just &ldquo;digest&rdquo;), using our private key:</p>
-
-<pre><code># sign the digest
-signature = pkcs1_15.new(private_key).sign(digest)
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># sign the digest
+signature = pkcs1_15.new(private_key).sign(digest)</pre></div>
 <p>At this point we&rsquo;re done signing the message. However we can also use pycryptodome to verify that our private key, public key, message, and signature are all singing the same tune. To do this, we just load the public key from disk and import it:</p>
-
-<pre><code># load public key
-with open('public.pem', 'r') as f:
-    public_key = RSA.import_key(f.read())
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># load public key
+with open(&#39;public.pem&#39;, &#39;r&#39;) as f:
+    public_key = RSA.import_key(f.read())</pre></div>
 <p>And then we verify with the public key, the message digest, and the signature:</p>
-
-<pre><code># verify the digest and signature
-pkcs1_15.new(public_key).verify(digest, signature)
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># verify the digest and signature
+pkcs1_15.new(public_key).verify(digest, signature)</pre></div>
 <p>If the call to <code>verify</code> doesn&rsquo;t throw an error, we&rsquo;re good! We&rsquo;ve got a public key, a message, and a signature we can now send to anyone, and using <strong>MATH</strong> they can verify (A) <em>we</em> composed the message, and (B) no one has <em>tampered</em> with the message, assuming of course that we&rsquo;ve done a good job keeping the private key a secret.</p>
 
 <p>Lastly, we base64-encode our signature. We do this because the signature at this point is just a collection of 256 bytes, and we&rsquo;re probably going to be sending it somewhere (along with the message), so base64 encoding turns it into a portable/printable string:</p>
-
-<pre><code># base64 encode the signature
-signature_b64 = b64encode(signature)
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"># base64 encode the signature
+signature_b64 = b64encode(signature)</pre></div>
 <p>If all went well, <code>signature_b64</code> now looks like this:</p>
-
-<pre><code>i5cldlxoVQdE/pCwwmqNHv0MOizb7sU4ssNPeQt/CtVtn/8RkeIX6BBX/vMtuJG0BEm8tLQ1zh5Rykkf4lYuRj1h0Ad3FiI7ANTSrZ/84FpP2TgHV4OyVlIsoKEnyyAMw3rQJWTuIMr6WW0buIFbNSfrokhtPRRbXOgP+6biWifK1zZeChbnNkrK8q/mPz28hMIFpqMDfo4UJ3ZkcZgUw0J5rSTzsQDikQpUzgsZfSuv5B+rb9Qb/7vqSmy+QjqL3QdPmmadUzzQNysUgMgGqqdINmLwdFgXHN2jcvRLVdM9vqblU1Ch/zNPUqIRv0amT9MkNZ/mnH2G94LC7RVIMA==
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">i5cldlxoVQdE/pCwwmqNHv0MOizb7sU4ssNPeQt/CtVtn/8RkeIX6BBX/vMtuJG0BEm8tLQ1zh5Rykkf4lYuRj1h0Ad3FiI7ANTSrZ/84FpP2TgHV4OyVlIsoKEnyyAMw3rQJWTuIMr6WW0buIFbNSfrokhtPRRbXOgP+6biWifK1zZeChbnNkrK8q/mPz28hMIFpqMDfo4UJ3ZkcZgUw0J5rSTzsQDikQpUzgsZfSuv5B+rb9Qb/7vqSmy+QjqL3QdPmmadUzzQNysUgMgGqqdINmLwdFgXHN2jcvRLVdM9vqblU1Ch/zNPUqIRv0amT9MkNZ/mnH2G94LC7RVIMA==</pre></div>
 <h2 id="verify-the-message-with-c">Verify the message with C#</h2>
 
 <p>Unfortunately (again), I couldn&rsquo;t find a way to use stock C# to play with RSA key signing and verifying using the <code>*.pem</code> files we generated earlier, and needed a 3rd party library called <a href="https://www.bouncycastle.org/csharp/index.html">BouncyCastle</a>. (If you work in a corporate environment, try not to tell your boss you&rsquo;re using a free 3rd party library called &ldquo;BouncyCastle&rdquo; for sensitive cryptographic applications.) Use <a href="https://www.nuget.org/">Nuget</a> to install BouncyCastle:</p>
-
-<pre><code>Install-Package BouncyCastle
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">Install-Package BouncyCastle</pre></div>
 <p>Now let&rsquo;s write some C# to verify the message. This code was written with help from various StackOverflow questions and answers, because I couldn&rsquo;t find any BouncyCastle documentation relating to signing/verifying RSA keys.</p>
-
-<pre><code>using Org.BouncyCastle.Crypto;
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Security;
@@ -342,14 +346,14 @@ namespace ConsoleApplication
     {
         static void Main(string[] args)
         {
-            // &quot;-----BEGIN PUBLIC KEY-----&quot;
-            var publicKey = File.ReadAllText(&quot;public.pem&quot;);
+            // &#34;-----BEGIN PUBLIC KEY-----&#34;
+            var publicKey = File.ReadAllText(&#34;public.pem&#34;);
 
-            // &quot;hello&quot;;
-            var message = File.ReadAllText(&quot;message.txt&quot;);
+            // &#34;hello&#34;;
+            var message = File.ReadAllText(&#34;message.txt&#34;);
 
-            // &quot;i5cldlxoVQdE...&quot;
-            var signatureB64 = File.ReadAllText(&quot;signature.txt&quot;);
+            // &#34;i5cldlxoVQdE...&#34;
+            var signatureB64 = File.ReadAllText(&#34;signature.txt&#34;);
 
             // import public key
             var rsa = new RSACryptoServiceProvider();
@@ -363,7 +367,7 @@ namespace ConsoleApplication
             byte[] signature = Convert.FromBase64String(signatureB64);
 
             // verify the message digest and signature
-            bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&quot;SHA256&quot;), signature);
+            bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&#34;SHA256&#34;), signature);
 
             Console.WriteLine(verified);
             Console.ReadLine();
@@ -381,44 +385,27 @@ namespace ConsoleApplication
             return DotNetUtilities.ToRSAParameters((RsaKeyParameters)pemReader.ReadObject());
         }
     }
-}
-</code></pre>
-
+}</pre></div>
 <p>Again, let&rsquo;s break this down. Let&rsquo;s assume we&rsquo;ve transferred the public key, the message, and the signature to a computer running Windows, in the form of a few files, namely <code>message.txt</code>, <code>public.pem</code>, and <code>signature.txt</code>.</p>
 
 <p>First, we load our public key, message, and base64-encoded signature from disk:</p>
-
-<pre><code>var publicKey = File.ReadAllText(&quot;public.pem&quot;);
-var message = File.ReadAllText(&quot;message.txt&quot;);
-var signatureB64 = File.ReadAllText(&quot;signature.txt&quot;);
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">var publicKey = File.ReadAllText(&#34;public.pem&#34;);
+var message = File.ReadAllText(&#34;message.txt&#34;);
+var signatureB64 = File.ReadAllText(&#34;signature.txt&#34;);</pre></div>
 <p>Next, we import the public key. Here&rsquo;s where we need BouncyCastle to convert a <code>.pem</code> file to <code>RSAParameters</code> using <code>PemReader</code> and <code>ToRSAParameters</code> along with some casting backflips (check out the <code>PublicKeyParams</code> method, and I&rsquo;ve also included <code>PrivateKeyParams</code> for completeness). This gives us an RSA key object to work with:</p>
-
-<pre><code>// import public key
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// import public key
 var rsa = new RSACryptoServiceProvider();
-rsa.ImportParameters(PublicKeyParams(publicKey));
-</code></pre>
-
+rsa.ImportParameters(PublicKeyParams(publicKey));</pre></div>
 <p>Hash the message by sending the bytes of our message through our SHA256 hash function:</p>
-
-<pre><code>// hash the message
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// hash the message
 byte[] buffer = Encoding.ASCII.GetBytes(message);
-byte[] digest = new SHA256Managed().ComputeHash(buffer);
-</code></pre>
-
+byte[] digest = new SHA256Managed().ComputeHash(buffer);</pre></div>
 <p>Remember we base64-encoded our signature, so we need to convert that back:</p>
-
-<pre><code>// base64 decode signature
-byte[] signature = Convert.FromBase64String(signatureB64);
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// base64 decode signature
+byte[] signature = Convert.FromBase64String(signatureB64);</pre></div>
 <p>Lastly, we call <code>rsa.VerifyHash</code> with the message digest and signature. We also need to indicate which hash function was used on the message (in our case it was SHA256).</p>
-
-<pre><code>// verify the message digest and signature
-bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&quot;SHA256&quot;), signature);
-</code></pre>
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4">// verify the message digest and signature
+bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&#34;SHA256&#34;), signature);</pre></div>
 <p>If <code>rsa.VerifyHash</code> returns <code>true</code>, we&rsquo;re done! In other words, again, the message is (A) from who we expect, and (B) hasn&rsquo;t been tampered with.</p>
 
 <h2 id="final-thoughts">Final thoughts</h2>
@@ -426,24 +413,22 @@ bool verified = rsa.VerifyHash(digest, CryptoConfig.MapNameToOID(&quot;SHA256&qu
 <p>At the time of writing (2018), RSA key signing and verifying with <code>.pem</code> files doesn&rsquo;t appear to be possible with stock Python or C#, and requires a couple of <a href="https://en.wikipedia.org/wiki/Free_as_in_Freedom">free-as-in-freedom</a> 3rd party libraries. Thanks, Open Source Software! (The pycryptodome library is BSD licensed, and the BouncyCastle library is MIT licensed.)</p>
 
 <p>Hopefully this post lowers the barrier to entry and demystifies the topic a little bit. Now go sign some messages!</p>
-</div>
 
-    
-    
+    </article>
+  </div>
 
-    
+  
+  
+  
+  <script>
+  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+  ga('create', 'UA-139334654-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+  
 
-    
-
-</main>
-
-        <footer>
-
-            <p class="copyright text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io">Hugo</a> and <a href="https://github.com/calintat/minimal">Minimal</a></p>
-
-        </footer>
-       
-    </body>
+  
+</body>
 
 </html>
-
